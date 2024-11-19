@@ -3,8 +3,8 @@ package controller
 import (
 	"context"
 	"log/slog"
-	"main/models"
-	"main/service"
+	"main/internal/models"
+	"main/internal/service"
 )
 
 type controller struct {

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"main/controller"
+	"main/internal/controller"
 	"main/restapi/operations"
 	"log/slog"
 	"strconv"

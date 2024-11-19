@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"main/models"
+	"main/internal/models"
 )
 
 // PostUsersIDReferrerCreatedCode is the HTTP code returned for type PostUsersIDReferrerCreated

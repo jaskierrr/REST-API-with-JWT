@@ -3,7 +3,7 @@ package repo
 import (
 	"context"
 	"log/slog"
-	"main/models"
+	"main/internal/models"
 
 	sq "github.com/Masterminds/squirrel"
 )

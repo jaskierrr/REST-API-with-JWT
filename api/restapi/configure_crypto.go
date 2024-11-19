@@ -10,10 +10,10 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"main/restapi/operations"
+	"main/api/restapi/operations"
 )
 
-//go:generate swagger generate server --target ..\..\crypto --name Crypto --spec ..\swagger.yaml --principal interface{} --exclude-main
+//go:generate swagger generate server --target ..\..\..\crypto --name Crypto --spec ..\..\swagger.yaml --model-package ./internal/models --server-package ./api/restapi --principal interface{} --exclude-main
 
 func configureFlags(api *operations.CryptoAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }

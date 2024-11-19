@@ -1,7 +1,7 @@
 package service
 
 import (
-	"main/models"
+	"main/internal/models"
 	"context"
 
 	"github.com/google/uuid"

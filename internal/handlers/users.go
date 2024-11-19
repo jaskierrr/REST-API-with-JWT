@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"main/models"
+	"main/internal/models"
 	"main/restapi/operations"
 	"log/slog"
 

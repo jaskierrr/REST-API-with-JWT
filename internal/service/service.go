@@ -2,8 +2,8 @@
 package service
 
 import (
-	"main/models"
-	repo "main/repositories"
+	"main/internal/models"
+	repo "main/internal/repositories"
 	"context"
 	"log/slog"
 )

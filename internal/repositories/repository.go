@@ -2,8 +2,8 @@
 package repo
 
 import (
-	"main/database"
-	"main/models"
+	"main/internal/database"
+	"main/internal/models"
 	"context"
 	"log/slog"
 

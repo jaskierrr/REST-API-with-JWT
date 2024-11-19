@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"main/models"
+	"main/internal/models"
 )
 
 // PostUsersCreatedCode is the HTTP code returned for type PostUsersCreated
