@@ -1,0 +1,181 @@
+swagger: "2.0"
+info:
+  description: "This is a crypto project"
+  version: "1.0.0"
+  title: "crypto"
+host: "localhost:8080"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  /users/:
+    post:
+      summary: "Create a new user"
+      parameters:
+        - in: body
+          name: user
+          required: true
+          schema:
+            $ref: "#/definitions/NewUser"
+      responses:
+        201:
+          description: "User has been created"
+          schema:
+            $ref: "#/definitions/User"
+        default:
+          description: Общая ошибка
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /users/leaderboard:
+    get:
+      summary: "Get top list of users"
+      responses:
+        200:
+          description: "Ok"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/User"
+        default:
+          description: Общая ошибка
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /users/{id}/status:
+    get:
+      summary: "Get user by ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: "Ok"
+          schema:
+            $ref: "#/definitions/User"
+        404:
+          description: "User not found"
+        default:
+          description: Общая ошибка
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /users/{id}:
+    delete:
+      summary: "Delete user by ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        204:
+          description: "User deleted"
+        default:
+          description: Общая ошибка
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /users/{id}/task/complete:
+    post:
+      summary: "Completion user's task"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: task
+          required: true
+          schema:
+            $ref: "#/definitions/NewTask"
+      responses:
+        201:
+          description: "User's task was completed"
+          schema:
+            $ref: "#/definitions/Task"
+        default:
+          description: Общая ошибка
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /users/{id}/referrer:
+    post:
+      summary: "Refferrer"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: refferer
+          required: true
+          schema:
+            $ref: "#/definitions/NewReferrer"
+      responses:
+        201:
+          description: "User's task was completed"
+          schema:
+            $ref: "#/definitions/Referrer"
+        default:
+          description: Общая ошибка
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      balance:
+        type: integer
+  NewUser:
+    type: object
+    properties:
+      name:
+        type: string
+        x-go-custom-tag: "validate:\"required\""
+  Task:
+    type: object
+    properties:
+      id:
+        type: integer
+      user_id:
+        type: integer
+      name:
+        type: string
+  NewTask:
+    type: object
+    properties:
+      user_id:
+        type: integer
+      name:
+        type: string
+        x-go-custom-tag: "validate:\"required\""
+  Referrer:
+    type: object
+    properties:
+      id:
+        type: integer
+      user_id:
+        type: string
+      referrer:
+        type: string
+  NewReferrer:
+    type: object
+    properties:
+      user_id:
+        type: integer
+      referrer:
+        type: string
+        x-go-custom-tag: "validate:\"required\""
+  ErrorResponse:
+    title: ErrorResponse
+    description: Общая ошибка
+    allOf:
+      - properties:
+          error:
+            type: object
+            properties:
+              message:
+                description: Message
+                type: string
