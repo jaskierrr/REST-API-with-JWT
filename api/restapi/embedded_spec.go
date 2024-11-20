@@ -32,7 +32,7 @@ func init() {
   "paths": {
     "/users/": {
       "post": {
-        "summary": "Create a new user",
+        "summary": "Register new user",
         "parameters": [
           {
             "name": "user",
@@ -45,7 +45,7 @@ func init() {
         ],
         "responses": {
           "201": {
-            "description": "User has been created",
+            "description": "User has been registered",
             "schema": {
               "$ref": "#/definitions/User"
             }
@@ -70,6 +70,35 @@ func init() {
               "items": {
                 "$ref": "#/definitions/User"
               }
+            }
+          },
+          "default": {
+            "description": "Общая ошибка",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "summary": "Login",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewUser"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User logined",
+            "schema": {
+              "type": "string"
             }
           },
           "default": {
@@ -253,7 +282,11 @@ func init() {
     "NewUser": {
       "type": "object",
       "properties": {
-        "name": {
+        "email": {
+          "type": "string",
+          "x-go-custom-tag": "validate:\"required\""
+        },
+        "password": {
           "type": "string",
           "x-go-custom-tag": "validate:\"required\""
         }
@@ -293,10 +326,13 @@ func init() {
         "balance": {
           "type": "integer"
         },
+        "email": {
+          "type": "string"
+        },
         "id": {
           "type": "integer"
         },
-        "name": {
+        "password": {
           "type": "string"
         }
       }
@@ -318,7 +354,7 @@ func init() {
   "paths": {
     "/users/": {
       "post": {
-        "summary": "Create a new user",
+        "summary": "Register new user",
         "parameters": [
           {
             "name": "user",
@@ -331,7 +367,7 @@ func init() {
         ],
         "responses": {
           "201": {
-            "description": "User has been created",
+            "description": "User has been registered",
             "schema": {
               "$ref": "#/definitions/User"
             }
@@ -356,6 +392,35 @@ func init() {
               "items": {
                 "$ref": "#/definitions/User"
               }
+            }
+          },
+          "default": {
+            "description": "Общая ошибка",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "summary": "Login",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewUser"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User logined",
+            "schema": {
+              "type": "string"
             }
           },
           "default": {
@@ -548,7 +613,11 @@ func init() {
     "NewUser": {
       "type": "object",
       "properties": {
-        "name": {
+        "email": {
+          "type": "string",
+          "x-go-custom-tag": "validate:\"required\""
+        },
+        "password": {
           "type": "string",
           "x-go-custom-tag": "validate:\"required\""
         }
@@ -588,10 +657,13 @@ func init() {
         "balance": {
           "type": "integer"
         },
+        "email": {
+          "type": "string"
+        },
         "id": {
           "type": "integer"
         },
-        "name": {
+        "password": {
           "type": "string"
         }
       }

@@ -8,11 +8,11 @@ import (
 	"main/internal/controller"
 	"main/internal/database"
 	"main/internal/handlers"
-	logger "main/logger"
 	repo "main/internal/repositories"
-	"main/restapi"
-	"main/restapi/operations"
 	"main/internal/service"
+	logger "main/internal/lib/logger"
+	"main/api/restapi"
+	"main/api/restapi/operations"
 
 	"github.com/go-openapi/loads"
 	"github.com/go-playground/validator/v10"
@@ -62,7 +62,7 @@ func (r *RootBootstrapper) registerRepositoriesAndServices(ctx context.Context, 
 	logger := r.Infrastructure.Logger
 	r.Infrastructure.DB = database.NewDB().NewConn(ctx, *r.Config, logger)
 	r.Repository = repo.NewUserRepo(r.Infrastructure.DB, logger)
-	r.Service = service.New(r.Repository, logger)
+	r.Service = service.New(r.Repository, logger, r.Config.Secret, r.Config.TokenTTL)
 }
 
 func (r *RootBootstrapper) registerAPIServer(cfg config.Config) error {

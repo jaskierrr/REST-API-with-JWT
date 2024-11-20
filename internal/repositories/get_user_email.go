@@ -8,10 +8,10 @@ import (
 	sq "github.com/Masterminds/squirrel"
 )
 
-func (repo *repository) GetUserID(ctx context.Context, id int) (models.User, error) {
-	sql, args, err := sq.Select("id, email, balance").
+func (repo *repository) GetUserEmail(ctx context.Context, email string) (models.User, error) {
+	sql, args, err := sq.Select("*").
 											From("users").
-											Where(sq.Eq{"id": id}).
+											Where(sq.Eq{"email": email}).
 											PlaceholderFormat(sq.Dollar).
 											ToSql()
 
@@ -23,7 +23,7 @@ func (repo *repository) GetUserID(ctx context.Context, id int) (models.User, err
 	err = repo.db.
 		GetConn().
 		QueryRow(ctx, sql, args...).
-		Scan(&user.ID, &user.Email, &user.Balance)
+		Scan(&user.ID, &user.Balance, &user.Email, &user.Password)
 
 	if err != nil {
 		return models.User{}, err

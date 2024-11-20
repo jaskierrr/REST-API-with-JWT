@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"main/logger/prettylog"
+	"main/internal/lib/logger/prettylog"
 	"log/slog"
 	"os"
 )

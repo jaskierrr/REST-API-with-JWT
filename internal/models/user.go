@@ -20,11 +20,14 @@ type User struct {
 	// balance
 	Balance int64 `json:"balance,omitempty"`
 
+	// email
+	Email string `json:"email,omitempty"`
+
 	// id
 	ID int64 `json:"id,omitempty"`
 
-	// name
-	Name string `json:"name,omitempty"`
+	// password
+	Password string `json:"password,omitempty"`
 }
 
 // Validate validates this user

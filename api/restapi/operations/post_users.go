@@ -32,7 +32,7 @@ func NewPostUsers(ctx *middleware.Context, handler PostUsersHandler) *PostUsers 
 /*
 	PostUsers swagger:route POST /users/ postUsers
 
-Create a new user
+Register new user
 */
 type PostUsers struct {
 	Context *middleware.Context

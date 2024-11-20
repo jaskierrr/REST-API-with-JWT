@@ -7,10 +7,19 @@ host: "localhost:8080"
 basePath: "/v1"
 schemes:
   - "http"
+components:
+  securitySchemes:
+    bearerAuth:            # Название схемы безопасности
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # Указывает, что используется JWT токен
+
+  security:
+    - bearerAuth: []
 paths:
   /users/:
     post:
-      summary: "Create a new user"
+      summary: "Register new user"
       parameters:
         - in: body
           name: user
@@ -19,9 +28,27 @@ paths:
             $ref: "#/definitions/NewUser"
       responses:
         201:
-          description: "User has been created"
+          description: "User has been registered"
           schema:
             $ref: "#/definitions/User"
+        default:
+          description: Общая ошибка
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /users/login:
+    post:
+      summary: "Login"
+      parameters:
+        - in: body
+          name: user
+          required: true
+          schema:
+            $ref: "#/definitions/NewUser"
+      responses:
+        201:
+          description: "User logined"
+          schema:
+            type: string
         default:
           description: Общая ошибка
           schema:
@@ -42,6 +69,8 @@ paths:
             $ref: "#/definitions/ErrorResponse"
   /users/{id}/status:
     get:
+      security:
+        - bearerAuth: []
       summary: "Get user by ID"
       parameters:
         - name: id
@@ -124,14 +153,19 @@ definitions:
     properties:
       id:
         type: integer
-      name:
+      email:
+        type: string
+      password:
         type: string
       balance:
         type: integer
   NewUser:
     type: object
     properties:
-      name:
+      email:
+        type: string
+        x-go-custom-tag: "validate:\"required\""
+      password:
         type: string
         x-go-custom-tag: "validate:\"required\""
   Task:

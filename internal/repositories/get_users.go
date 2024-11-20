@@ -16,7 +16,7 @@ import (
 // getUsersQuery     = `select * from users`
 
 func (repo *repository) GetUsers(ctx context.Context) ([]*models.User, error) {
-	sql, args, err := sq.Select("*").
+	sql, args, err := sq.Select("id, email, balance").
 												From("users").
 												Where("balance > 0").
 												OrderBy("balance DESC").
@@ -36,7 +36,7 @@ func (repo *repository) GetUsers(ctx context.Context) ([]*models.User, error) {
 	for rows.Next() {
 		user := models.User{}
 
-		err := rows.Scan(&user.ID, &user.Name, &user.Balance)
+		err := rows.Scan(&user.ID, &user.Email, &user.Balance)
 
 		if err != nil {
 			repo.logger.Error("Error",

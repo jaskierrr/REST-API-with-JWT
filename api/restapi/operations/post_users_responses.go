@@ -17,7 +17,7 @@ import (
 const PostUsersCreatedCode int = 201
 
 /*
-PostUsersCreated User has been created
+PostUsersCreated User has been registered
 
 swagger:response postUsersCreated
 */

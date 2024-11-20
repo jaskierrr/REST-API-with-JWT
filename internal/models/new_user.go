@@ -17,8 +17,11 @@ import (
 // swagger:model NewUser
 type NewUser struct {
 
-	// name
-	Name string `json:"name,omitempty" validate:"required"`
+	// email
+	Email string `json:"email,omitempty" validate:"required"`
+
+	// password
+	Password string `json:"password,omitempty" validate:"required"`
 }
 
 // Validate validates this new user

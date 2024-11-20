@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"main/internal/models"
-	"main/restapi/operations"
+	"main/api/restapi/operations"
 	"log/slog"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -41,7 +41,7 @@ func (h *handlers) GetUsersID(params operations.GetUsersIDStatusParams) middlewa
 	}
 
 	ctx := params.HTTPRequest.Context()
-	user, err := h.controller.GetUserID(ctx, int(params.ID))
+	user, err := h.controller.GetUserID(ctx, params)
 
 	if err != nil {
 		return operations.NewGetUsersIDStatusDefault(404).WithPayload(&models.ErrorResponse{
@@ -116,4 +116,42 @@ func (h *handlers) PostUsers(params operations.PostUsersParams) middleware.Respo
 	}
 
 	return operations.NewPostUsersCreated().WithPayload(&user)
+}
+
+func (h *handlers) Login(params operations.PostUsersLoginParams) middleware.Responder {
+	h.logger.Info(
+		"Trying to Login",
+		slog.Any("user", params.User),
+	)
+
+	err := validate.Struct(params.User)
+	if err != nil {
+		h.logger.Error(
+			"Failed to Login",
+			slog.String("error", err.Error()),
+		)
+		return operations.NewPostUsersLoginDefault(500).WithPayload(&models.ErrorResponse{
+			Error: &models.ErrorResponseAO0Error{
+				Message: "Failed to POST user in storage " + err.Error(),
+			},
+		})
+	}
+
+	ctx := params.HTTPRequest.Context()
+	token, err := h.controller.Login(ctx, *params.User)
+
+	if err != nil {
+		h.logger.Error(
+			"Failed to Login",
+			slog.Any("user", params.User),
+			slog.String("error", err.Error()),
+		)
+		return operations.NewPostUsersLoginDefault(500).WithPayload(&models.ErrorResponse{
+			Error: &models.ErrorResponseAO0Error{
+				Message: "Failed to Login" + err.Error(),
+			},
+		})
+	}
+
+	return operations.NewPostUsersLoginCreated().WithPayload(token)
 }

@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"main/internal/controller"
-	"main/restapi/operations"
+	"main/api/restapi/operations"
 	"log/slog"
 	"strconv"
 
@@ -22,6 +22,7 @@ type Handlers interface {
 	PostUsers(params operations.PostUsersParams) middleware.Responder
 	DeleteUsersID(params operations.DeleteUsersIDParams) middleware.Responder
 	GetUsersLeader(params operations.GetUsersLeaderboardParams) middleware.Responder
+	Login(params operations.PostUsersLoginParams) middleware.Responder
 
 	Link(api *operations.CryptoAPI)
 }
@@ -39,6 +40,7 @@ func (h *handlers) Link(api *operations.CryptoAPI) {
 	api.GetUsersIDStatusHandler = operations.GetUsersIDStatusHandlerFunc(h.GetUsersID)
 	api.PostUsersHandler = operations.PostUsersHandlerFunc(h.PostUsers)
 	api.DeleteUsersIDHandler = operations.DeleteUsersIDHandlerFunc(h.DeleteUsersID)
+	api.PostUsersLoginHandler = operations.PostUsersLoginHandlerFunc(h.Login)
 }
 
 func convertI64tStr(integer int64) string {

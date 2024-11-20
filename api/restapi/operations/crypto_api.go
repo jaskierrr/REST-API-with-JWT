@@ -60,6 +60,9 @@ func NewCryptoAPI(spec *loads.Document) *CryptoAPI {
 		PostUsersIDTaskCompleteHandler: PostUsersIDTaskCompleteHandlerFunc(func(params PostUsersIDTaskCompleteParams) middleware.Responder {
 			return middleware.NotImplemented("operation PostUsersIDTaskComplete has not yet been implemented")
 		}),
+		PostUsersLoginHandler: PostUsersLoginHandlerFunc(func(params PostUsersLoginParams) middleware.Responder {
+			return middleware.NotImplemented("operation PostUsersLogin has not yet been implemented")
+		}),
 	}
 }
 
@@ -108,6 +111,8 @@ type CryptoAPI struct {
 	PostUsersIDReferrerHandler PostUsersIDReferrerHandler
 	// PostUsersIDTaskCompleteHandler sets the operation handler for the post users ID task complete operation
 	PostUsersIDTaskCompleteHandler PostUsersIDTaskCompleteHandler
+	// PostUsersLoginHandler sets the operation handler for the post users login operation
+	PostUsersLoginHandler PostUsersLoginHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -202,6 +207,9 @@ func (o *CryptoAPI) Validate() error {
 	}
 	if o.PostUsersIDTaskCompleteHandler == nil {
 		unregistered = append(unregistered, "PostUsersIDTaskCompleteHandler")
+	}
+	if o.PostUsersLoginHandler == nil {
+		unregistered = append(unregistered, "PostUsersLoginHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -315,6 +323,10 @@ func (o *CryptoAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/users/{id}/task/complete"] = NewPostUsersIDTaskComplete(o.context, o.PostUsersIDTaskCompleteHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/users/login"] = NewPostUsersLogin(o.context, o.PostUsersLoginHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

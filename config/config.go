@@ -10,6 +10,8 @@ import (
 type Config struct {
 	Database   Database `envconfig:"db" required:"true"`
 	ServerPort int      `envconfig:"serverport" required:"true" default:"8080"`
+	Secret string      `envconfig:"secret" required:"true"`
+	TokenTTL int      `envconfig:"tokenttl" required:"true"`
 }
 
 type Database struct {
