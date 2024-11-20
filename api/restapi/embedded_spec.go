@@ -61,6 +61,11 @@ func init() {
     },
     "/users/leaderboard": {
       "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "summary": "Get top list of users",
         "responses": {
           "200": {
@@ -112,6 +117,11 @@ func init() {
     },
     "/users/{id}": {
       "delete": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "summary": "Delete user by ID",
         "parameters": [
           {
@@ -134,43 +144,13 @@ func init() {
         }
       }
     },
-    "/users/{id}/referrer": {
-      "post": {
-        "summary": "Refferrer",
-        "parameters": [
-          {
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "name": "refferer",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/NewReferrer"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "User's task was completed",
-            "schema": {
-              "$ref": "#/definitions/Referrer"
-            }
-          },
-          "default": {
-            "description": "Общая ошибка",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
     "/users/{id}/status": {
       "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "summary": "Get user by ID",
         "parameters": [
           {
@@ -199,13 +179,58 @@ func init() {
         }
       }
     },
-    "/users/{id}/task/complete": {
+    "/users/{user_id}/referrer": {
       "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Refferrer",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "user_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "refferer",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewReferrer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User's task was completed",
+            "schema": {
+              "$ref": "#/definitions/Referrer"
+            }
+          },
+          "default": {
+            "description": "Общая ошибка",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/task/complete": {
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "summary": "Completion user's task",
         "parameters": [
           {
             "type": "integer",
-            "name": "id",
+            "name": "user_id",
             "in": "path",
             "required": true
           },
@@ -261,9 +286,6 @@ func init() {
         "referrer": {
           "type": "string",
           "x-go-custom-tag": "validate:\"required\""
-        },
-        "user_id": {
-          "type": "integer"
         }
       }
     },
@@ -273,9 +295,6 @@ func init() {
         "name": {
           "type": "string",
           "x-go-custom-tag": "validate:\"required\""
-        },
-        "user_id": {
-          "type": "integer"
         }
       }
     },
@@ -302,7 +321,7 @@ func init() {
           "type": "string"
         },
         "user_id": {
-          "type": "string"
+          "type": "integer"
         }
       }
     },
@@ -336,6 +355,13 @@ func init() {
           "type": "string"
         }
       }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
     }
   }
 }`))
@@ -383,6 +409,11 @@ func init() {
     },
     "/users/leaderboard": {
       "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "summary": "Get top list of users",
         "responses": {
           "200": {
@@ -434,6 +465,11 @@ func init() {
     },
     "/users/{id}": {
       "delete": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "summary": "Delete user by ID",
         "parameters": [
           {
@@ -456,43 +492,13 @@ func init() {
         }
       }
     },
-    "/users/{id}/referrer": {
-      "post": {
-        "summary": "Refferrer",
-        "parameters": [
-          {
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "name": "refferer",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/NewReferrer"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "User's task was completed",
-            "schema": {
-              "$ref": "#/definitions/Referrer"
-            }
-          },
-          "default": {
-            "description": "Общая ошибка",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
-          }
-        }
-      }
-    },
     "/users/{id}/status": {
       "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "summary": "Get user by ID",
         "parameters": [
           {
@@ -521,13 +527,58 @@ func init() {
         }
       }
     },
-    "/users/{id}/task/complete": {
+    "/users/{user_id}/referrer": {
       "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Refferrer",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "user_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "refferer",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewReferrer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User's task was completed",
+            "schema": {
+              "$ref": "#/definitions/Referrer"
+            }
+          },
+          "default": {
+            "description": "Общая ошибка",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/task/complete": {
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "summary": "Completion user's task",
         "parameters": [
           {
             "type": "integer",
-            "name": "id",
+            "name": "user_id",
             "in": "path",
             "required": true
           },
@@ -592,9 +643,6 @@ func init() {
         "referrer": {
           "type": "string",
           "x-go-custom-tag": "validate:\"required\""
-        },
-        "user_id": {
-          "type": "integer"
         }
       }
     },
@@ -604,9 +652,6 @@ func init() {
         "name": {
           "type": "string",
           "x-go-custom-tag": "validate:\"required\""
-        },
-        "user_id": {
-          "type": "integer"
         }
       }
     },
@@ -633,7 +678,7 @@ func init() {
           "type": "string"
         },
         "user_id": {
-          "type": "string"
+          "type": "integer"
         }
       }
     },
@@ -667,6 +712,13 @@ func init() {
           "type": "string"
         }
       }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
     }
   }
 }`))

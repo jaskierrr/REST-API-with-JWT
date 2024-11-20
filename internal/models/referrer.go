@@ -24,7 +24,7 @@ type Referrer struct {
 	Referrer string `json:"referrer,omitempty"`
 
 	// user id
-	UserID string `json:"user_id,omitempty"`
+	UserID int64 `json:"user_id,omitempty"`
 }
 
 // Validate validates this referrer

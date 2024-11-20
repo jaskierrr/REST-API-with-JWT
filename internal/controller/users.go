@@ -14,12 +14,12 @@ func (c controller) PostUser(ctx context.Context, userData models.NewUser) (mode
 	return c.service.PostUser(ctx, userData)
 }
 
-func (c controller) DeleteUserID(ctx context.Context, id int) error {
-	return c.service.DeleteUserID(ctx, id)
+func (c controller) DeleteUserID(ctx context.Context, params operations.DeleteUsersIDParams) error {
+	return c.service.DeleteUserID(ctx, params)
 }
 
-func (c controller) GetUsers(ctx context.Context) ([]*models.User, error) {
-	return c.service.GetUsers(ctx)
+func (c controller) GetUsers(ctx context.Context, params operations.GetUsersLeaderboardParams) ([]*models.User, error) {
+	return c.service.GetUsers(ctx, params)
 }
 
 func (c controller) Login(ctx context.Context, userData models.NewUser) (string, error) {

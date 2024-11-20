@@ -16,8 +16,11 @@ type controller struct {
 type Controller interface {
 	GetUserID(ctx context.Context, params operations.GetUsersIDStatusParams) (models.User, error)
 	PostUser(ctx context.Context, user models.NewUser) (models.User, error)
-	DeleteUserID(ctx context.Context, id int) error
-	GetUsers(ctx context.Context) ([]*models.User, error)
+	DeleteUserID(ctx context.Context, params operations.DeleteUsersIDParams) error
+	GetUsers(ctx context.Context, params operations.GetUsersLeaderboardParams) ([]*models.User, error)
+	PostTask(ctx context.Context, taskData models.NewTask, userID int64) (models.Task, error)
+	PostRef(ctx context.Context, refData models.NewReferrer, userID int64) (models.Referrer, error)
+
 	Login(ctx context.Context, userData models.NewUser) (string, error)
 }
 

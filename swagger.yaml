@@ -7,15 +7,11 @@ host: "localhost:8080"
 basePath: "/v1"
 schemes:
   - "http"
-components:
-  securitySchemes:
-    bearerAuth:            # Название схемы безопасности
-      type: http
-      scheme: bearer
-      bearerFormat: JWT    # Указывает, что используется JWT токен
-
-  security:
-    - bearerAuth: []
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
 paths:
   /users/:
     post:
@@ -55,6 +51,8 @@ paths:
             $ref: "#/definitions/ErrorResponse"
   /users/leaderboard:
     get:
+      security:
+      - Bearer: []
       summary: "Get top list of users"
       responses:
         200:
@@ -70,7 +68,7 @@ paths:
   /users/{id}/status:
     get:
       security:
-        - bearerAuth: []
+      - Bearer: []
       summary: "Get user by ID"
       parameters:
         - name: id
@@ -90,6 +88,8 @@ paths:
             $ref: "#/definitions/ErrorResponse"
   /users/{id}:
     delete:
+      security:
+      - Bearer: []
       summary: "Delete user by ID"
       parameters:
         - name: id
@@ -103,11 +103,13 @@ paths:
           description: Общая ошибка
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /users/{id}/task/complete:
+  /users/{user_id}/task/complete:
     post:
+      security:
+      - Bearer: []
       summary: "Completion user's task"
       parameters:
-        - name: id
+        - name: user_id
           in: path
           required: true
           type: integer
@@ -125,11 +127,13 @@ paths:
           description: Общая ошибка
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /users/{id}/referrer:
+  /users/{user_id}/referrer:
     post:
+      security:
+      - Bearer: []
       summary: "Refferrer"
       parameters:
-        - name: id
+        - name: user_id
           in: path
           required: true
           type: integer
@@ -180,8 +184,6 @@ definitions:
   NewTask:
     type: object
     properties:
-      user_id:
-        type: integer
       name:
         type: string
         x-go-custom-tag: "validate:\"required\""
@@ -191,14 +193,12 @@ definitions:
       id:
         type: integer
       user_id:
-        type: string
+        type: integer
       referrer:
         type: string
   NewReferrer:
     type: object
     properties:
-      user_id:
-        type: integer
       referrer:
         type: string
         x-go-custom-tag: "validate:\"required\""

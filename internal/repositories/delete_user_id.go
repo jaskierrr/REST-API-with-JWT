@@ -4,20 +4,25 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgconn"
+	sq "github.com/Masterminds/squirrel"
 )
 
-func (repo *repository) DeleteUser(ctx context.Context, id int) (pgconn.CommandTag, error) {
-	args := pgx.NamedArgs{
-		"userID": id,
-	}
-	commandTag, err := repo.db.
-		GetConn().
-		Exec(ctx, deleteUserIDQuery, args)
+func (repo *repository) DeleteUser(ctx context.Context, id int) error {
+	sql, args, err := sq.Delete("*").
+												From("users").
+												Where(sq.Eq{"id": id}).
+												PlaceholderFormat(sq.Dollar).
+												ToSql()
 
 	if err != nil {
-		return pgconn.CommandTag{}, err
+		return err
+	}
+	_, err = repo.db.
+					GetConn().
+					Exec(ctx, sql, args...)
+
+	if err != nil {
+		return err
 	}
 
 	repo.logger.Info(
@@ -25,5 +30,5 @@ func (repo *repository) DeleteUser(ctx context.Context, id int) (pgconn.CommandT
 		slog.Any("ID", id),
 	)
 
-	return commandTag, nil
+	return nil
 }

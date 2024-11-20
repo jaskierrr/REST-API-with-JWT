@@ -18,6 +18,8 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+var Secret string = ""
+
 type RootBootstrapper struct {
 	Infrastructure struct {
 		Logger *slog.Logger
@@ -46,6 +48,7 @@ func New() RootBoot {
 }
 
 func (r *RootBootstrapper) RunAPI() error {
+	Secret = r.Config.Secret
 	ctx := context.Background()
 	r.Infrastructure.Logger = logger.NewLogger()
 

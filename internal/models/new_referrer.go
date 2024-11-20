@@ -19,9 +19,6 @@ type NewReferrer struct {
 
 	// referrer
 	Referrer string `json:"referrer,omitempty" validate:"required"`
-
-	// user id
-	UserID int64 `json:"user_id,omitempty"`
 }
 
 // Validate validates this new referrer

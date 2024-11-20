@@ -8,13 +8,6 @@ import (
 	sq "github.com/Masterminds/squirrel"
 )
 
-// SELECT id, name, balance
-// FROM users
-// ORDER BY balance DESC
-// LIMIT 5;
-
-// getUsersQuery     = `select * from users`
-
 func (repo *repository) GetUsers(ctx context.Context) ([]*models.User, error) {
 	sql, args, err := sq.Select("id, email, balance").
 												From("users").

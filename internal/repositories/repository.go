@@ -2,16 +2,10 @@
 package repo
 
 import (
-	"main/internal/database"
-	"main/internal/models"
 	"context"
 	"log/slog"
-
-	"github.com/jackc/pgx/v5/pgconn"
-)
-
-const (
-	deleteUserIDQuery = `delete from users where id = @userID`
+	"main/internal/database"
+	"main/internal/models"
 )
 
 type repository struct {
@@ -22,8 +16,11 @@ type repository struct {
 type Repository interface {
 	GetUserID(ctx context.Context, id int) (models.User, error)
 	PostUser(ctx context.Context, user models.User, passHash []byte) (models.User, error)
-	DeleteUser(ctx context.Context, id int) (pgconn.CommandTag, error)
+	DeleteUser(ctx context.Context, id int) error
 	GetUsers(ctx context.Context) ([]*models.User, error)
+	PostTask(ctx context.Context, taskData models.Task) (models.Task, error)
+	PostRef(ctx context.Context, refData models.Referrer) (models.Referrer, error)
+
 	GetUserEmail(ctx context.Context, id string) (models.User, error)
 }
 

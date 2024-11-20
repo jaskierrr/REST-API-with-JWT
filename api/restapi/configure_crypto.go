@@ -38,17 +38,17 @@ func configureAPI(api *operations.CryptoAPI) http.Handler {
 	api.JSONProducer = runtime.JSONProducer()
 
 	if api.DeleteUsersIDHandler == nil {
-		api.DeleteUsersIDHandler = operations.DeleteUsersIDHandlerFunc(func(params operations.DeleteUsersIDParams) middleware.Responder {
+		api.DeleteUsersIDHandler = operations.DeleteUsersIDHandlerFunc(func(params operations.DeleteUsersIDParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation operations.DeleteUsersID has not yet been implemented")
 		})
 	}
 	if api.GetUsersIDStatusHandler == nil {
-		api.GetUsersIDStatusHandler = operations.GetUsersIDStatusHandlerFunc(func(params operations.GetUsersIDStatusParams) middleware.Responder {
+		api.GetUsersIDStatusHandler = operations.GetUsersIDStatusHandlerFunc(func(params operations.GetUsersIDStatusParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation operations.GetUsersIDStatus has not yet been implemented")
 		})
 	}
 	if api.GetUsersLeaderboardHandler == nil {
-		api.GetUsersLeaderboardHandler = operations.GetUsersLeaderboardHandlerFunc(func(params operations.GetUsersLeaderboardParams) middleware.Responder {
+		api.GetUsersLeaderboardHandler = operations.GetUsersLeaderboardHandlerFunc(func(params operations.GetUsersLeaderboardParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation operations.GetUsersLeaderboard has not yet been implemented")
 		})
 	}
@@ -57,14 +57,19 @@ func configureAPI(api *operations.CryptoAPI) http.Handler {
 			return middleware.NotImplemented("operation operations.PostUsers has not yet been implemented")
 		})
 	}
-	if api.PostUsersIDReferrerHandler == nil {
-		api.PostUsersIDReferrerHandler = operations.PostUsersIDReferrerHandlerFunc(func(params operations.PostUsersIDReferrerParams) middleware.Responder {
+	if api.PostUsersUserIDReferrerHandler == nil {
+		api.PostUsersUserIDReferrerHandler = operations.PostUsersUserIDReferrerHandlerFunc(func(params operations.PostUsersUserIDReferrerParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation operations.PostUsersIDReferrer has not yet been implemented")
 		})
 	}
-	if api.PostUsersIDTaskCompleteHandler == nil {
-		api.PostUsersIDTaskCompleteHandler = operations.PostUsersIDTaskCompleteHandlerFunc(func(params operations.PostUsersIDTaskCompleteParams) middleware.Responder {
+	if api.PostUsersUserIDTaskCompleteHandler == nil {
+		api.PostUsersUserIDTaskCompleteHandler = operations.PostUsersUserIDTaskCompleteHandlerFunc(func(params operations.PostUsersUserIDTaskCompleteParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation operations.PostUsersIDTaskComplete has not yet been implemented")
+		})
+	}
+	if api.PostUsersLoginHandler == nil {
+		api.PostUsersLoginHandler = operations.PostUsersLoginHandlerFunc(func(params operations.PostUsersLoginParams) middleware.Responder {
+			return middleware.NotImplemented("operation operations.PostUsersLogin has not yet been implemented")
 		})
 	}
 

@@ -19,9 +19,6 @@ type NewTask struct {
 
 	// name
 	Name string `json:"name,omitempty" validate:"required"`
-
-	// user id
-	UserID int64 `json:"user_id,omitempty"`
 }
 
 // Validate validates this new task

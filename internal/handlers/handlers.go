@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"main/internal/controller"
-	"main/api/restapi/operations"
 	"log/slog"
+	"main/api/restapi/operations"
+	"main/internal/controller"
+	"main/internal/lib/jwt"
 	"strconv"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -18,10 +19,13 @@ type handlers struct {
 var validate *validator.Validate
 
 type Handlers interface {
-	GetUsersID(params operations.GetUsersIDStatusParams) middleware.Responder
 	PostUsers(params operations.PostUsersParams) middleware.Responder
-	DeleteUsersID(params operations.DeleteUsersIDParams) middleware.Responder
-	GetUsersLeader(params operations.GetUsersLeaderboardParams) middleware.Responder
+	GetUsersID(params operations.GetUsersIDStatusParams, principal interface{}) middleware.Responder
+	DeleteUsersID(params operations.DeleteUsersIDParams, principal interface{}) middleware.Responder
+	GetUsersLeader(params operations.GetUsersLeaderboardParams, principal interface{}) middleware.Responder
+	PostTask(params operations.PostUsersUserIDTaskCompleteParams, principal interface{}) middleware.Responder
+	PostRef(params operations.PostUsersUserIDReferrerParams, principal interface{}) middleware.Responder
+
 	Login(params operations.PostUsersLoginParams) middleware.Responder
 
 	Link(api *operations.CryptoAPI)
@@ -41,6 +45,11 @@ func (h *handlers) Link(api *operations.CryptoAPI) {
 	api.PostUsersHandler = operations.PostUsersHandlerFunc(h.PostUsers)
 	api.DeleteUsersIDHandler = operations.DeleteUsersIDHandlerFunc(h.DeleteUsersID)
 	api.PostUsersLoginHandler = operations.PostUsersLoginHandlerFunc(h.Login)
+	api.PostUsersUserIDTaskCompleteHandler = operations.PostUsersUserIDTaskCompleteHandlerFunc(h.PostTask)
+	api.PostUsersUserIDReferrerHandler = operations.PostUsersUserIDReferrerHandlerFunc(h.PostRef)
+
+	//! Объявление Middleware
+	api.BearerAuth = jwt.ValidateToken
 }
 
 func convertI64tStr(integer int64) string {

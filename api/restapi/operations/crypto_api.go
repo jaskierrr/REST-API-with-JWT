@@ -42,27 +42,34 @@ func NewCryptoAPI(spec *loads.Document) *CryptoAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
-		DeleteUsersIDHandler: DeleteUsersIDHandlerFunc(func(params DeleteUsersIDParams) middleware.Responder {
+		DeleteUsersIDHandler: DeleteUsersIDHandlerFunc(func(params DeleteUsersIDParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation DeleteUsersID has not yet been implemented")
 		}),
-		GetUsersIDStatusHandler: GetUsersIDStatusHandlerFunc(func(params GetUsersIDStatusParams) middleware.Responder {
+		GetUsersIDStatusHandler: GetUsersIDStatusHandlerFunc(func(params GetUsersIDStatusParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation GetUsersIDStatus has not yet been implemented")
 		}),
-		GetUsersLeaderboardHandler: GetUsersLeaderboardHandlerFunc(func(params GetUsersLeaderboardParams) middleware.Responder {
+		GetUsersLeaderboardHandler: GetUsersLeaderboardHandlerFunc(func(params GetUsersLeaderboardParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation GetUsersLeaderboard has not yet been implemented")
 		}),
 		PostUsersHandler: PostUsersHandlerFunc(func(params PostUsersParams) middleware.Responder {
 			return middleware.NotImplemented("operation PostUsers has not yet been implemented")
 		}),
-		PostUsersIDReferrerHandler: PostUsersIDReferrerHandlerFunc(func(params PostUsersIDReferrerParams) middleware.Responder {
-			return middleware.NotImplemented("operation PostUsersIDReferrer has not yet been implemented")
-		}),
-		PostUsersIDTaskCompleteHandler: PostUsersIDTaskCompleteHandlerFunc(func(params PostUsersIDTaskCompleteParams) middleware.Responder {
-			return middleware.NotImplemented("operation PostUsersIDTaskComplete has not yet been implemented")
-		}),
 		PostUsersLoginHandler: PostUsersLoginHandlerFunc(func(params PostUsersLoginParams) middleware.Responder {
 			return middleware.NotImplemented("operation PostUsersLogin has not yet been implemented")
 		}),
+		PostUsersUserIDReferrerHandler: PostUsersUserIDReferrerHandlerFunc(func(params PostUsersUserIDReferrerParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation PostUsersUserIDReferrer has not yet been implemented")
+		}),
+		PostUsersUserIDTaskCompleteHandler: PostUsersUserIDTaskCompleteHandlerFunc(func(params PostUsersUserIDTaskCompleteParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation PostUsersUserIDTaskComplete has not yet been implemented")
+		}),
+
+		// Applies when the "Authorization" header is set
+		BearerAuth: func(token string) (interface{}, error) {
+			return nil, errors.NotImplemented("api key auth (Bearer) Authorization from header param [Authorization] has not yet been implemented")
+		},
+		// default authorizer is authorized meaning no requests are blocked
+		APIAuthorizer: security.Authorized(),
 	}
 }
 
@@ -99,6 +106,13 @@ type CryptoAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// BearerAuth registers a function that takes a token and returns a principal
+	// it performs authentication based on an api key Authorization provided in the header
+	BearerAuth func(string) (interface{}, error)
+
+	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
+	APIAuthorizer runtime.Authorizer
+
 	// DeleteUsersIDHandler sets the operation handler for the delete users ID operation
 	DeleteUsersIDHandler DeleteUsersIDHandler
 	// GetUsersIDStatusHandler sets the operation handler for the get users ID status operation
@@ -107,12 +121,12 @@ type CryptoAPI struct {
 	GetUsersLeaderboardHandler GetUsersLeaderboardHandler
 	// PostUsersHandler sets the operation handler for the post users operation
 	PostUsersHandler PostUsersHandler
-	// PostUsersIDReferrerHandler sets the operation handler for the post users ID referrer operation
-	PostUsersIDReferrerHandler PostUsersIDReferrerHandler
-	// PostUsersIDTaskCompleteHandler sets the operation handler for the post users ID task complete operation
-	PostUsersIDTaskCompleteHandler PostUsersIDTaskCompleteHandler
 	// PostUsersLoginHandler sets the operation handler for the post users login operation
 	PostUsersLoginHandler PostUsersLoginHandler
+	// PostUsersUserIDReferrerHandler sets the operation handler for the post users user ID referrer operation
+	PostUsersUserIDReferrerHandler PostUsersUserIDReferrerHandler
+	// PostUsersUserIDTaskCompleteHandler sets the operation handler for the post users user ID task complete operation
+	PostUsersUserIDTaskCompleteHandler PostUsersUserIDTaskCompleteHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -190,6 +204,10 @@ func (o *CryptoAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.BearerAuth == nil {
+		unregistered = append(unregistered, "AuthorizationAuth")
+	}
+
 	if o.DeleteUsersIDHandler == nil {
 		unregistered = append(unregistered, "DeleteUsersIDHandler")
 	}
@@ -202,14 +220,14 @@ func (o *CryptoAPI) Validate() error {
 	if o.PostUsersHandler == nil {
 		unregistered = append(unregistered, "PostUsersHandler")
 	}
-	if o.PostUsersIDReferrerHandler == nil {
-		unregistered = append(unregistered, "PostUsersIDReferrerHandler")
-	}
-	if o.PostUsersIDTaskCompleteHandler == nil {
-		unregistered = append(unregistered, "PostUsersIDTaskCompleteHandler")
-	}
 	if o.PostUsersLoginHandler == nil {
 		unregistered = append(unregistered, "PostUsersLoginHandler")
+	}
+	if o.PostUsersUserIDReferrerHandler == nil {
+		unregistered = append(unregistered, "PostUsersUserIDReferrerHandler")
+	}
+	if o.PostUsersUserIDTaskCompleteHandler == nil {
+		unregistered = append(unregistered, "PostUsersUserIDTaskCompleteHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -226,12 +244,21 @@ func (o *CryptoAPI) ServeErrorFor(operationID string) func(http.ResponseWriter, 
 
 // AuthenticatorsFor gets the authenticators for the specified security schemes
 func (o *CryptoAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
-	return nil
+	result := make(map[string]runtime.Authenticator)
+	for name := range schemes {
+		switch name {
+		case "Bearer":
+			scheme := schemes[name]
+			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, o.BearerAuth)
+
+		}
+	}
+	return result
 }
 
 // Authorizer returns the registered authorizer
 func (o *CryptoAPI) Authorizer() runtime.Authorizer {
-	return nil
+	return o.APIAuthorizer
 }
 
 // ConsumersFor gets the consumers for the specified media types.
@@ -318,15 +345,15 @@ func (o *CryptoAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/users/{id}/referrer"] = NewPostUsersIDReferrer(o.context, o.PostUsersIDReferrerHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/users/{id}/task/complete"] = NewPostUsersIDTaskComplete(o.context, o.PostUsersIDTaskCompleteHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
 	o.handlers["POST"]["/users/login"] = NewPostUsersLogin(o.context, o.PostUsersLoginHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/users/{user_id}/referrer"] = NewPostUsersUserIDReferrer(o.context, o.PostUsersUserIDReferrerHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/users/{user_id}/task/complete"] = NewPostUsersUserIDTaskComplete(o.context, o.PostUsersUserIDTaskCompleteHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

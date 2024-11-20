@@ -12,16 +12,16 @@ import (
 )
 
 // PostUsersIDReferrerHandlerFunc turns a function with the right signature into a post users ID referrer handler
-type PostUsersIDReferrerHandlerFunc func(PostUsersIDReferrerParams) middleware.Responder
+type PostUsersIDReferrerHandlerFunc func(PostUsersIDReferrerParams, interface{}) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn PostUsersIDReferrerHandlerFunc) Handle(params PostUsersIDReferrerParams) middleware.Responder {
-	return fn(params)
+func (fn PostUsersIDReferrerHandlerFunc) Handle(params PostUsersIDReferrerParams, principal interface{}) middleware.Responder {
+	return fn(params, principal)
 }
 
 // PostUsersIDReferrerHandler interface for that can handle valid post users ID referrer params
 type PostUsersIDReferrerHandler interface {
-	Handle(PostUsersIDReferrerParams) middleware.Responder
+	Handle(PostUsersIDReferrerParams, interface{}) middleware.Responder
 }
 
 // NewPostUsersIDReferrer creates a new http.Handler for the post users ID referrer operation
@@ -45,12 +45,25 @@ func (o *PostUsersIDReferrer) ServeHTTP(rw http.ResponseWriter, r *http.Request)
 		*r = *rCtx
 	}
 	var Params = NewPostUsersIDReferrerParams()
+	uprinc, aCtx, err := o.Context.Authorize(r, route)
+	if err != nil {
+		o.Context.Respond(rw, r, route.Produces, route, err)
+		return
+	}
+	if aCtx != nil {
+		*r = *aCtx
+	}
+	var principal interface{}
+	if uprinc != nil {
+		principal = uprinc.(interface{}) // this is really a interface{}, I promise
+	}
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
-	res := o.Handler.Handle(Params) // actually handle the request
+	res := o.Handler.Handle(Params, principal) // actually handle the request
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
