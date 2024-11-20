@@ -49,6 +49,30 @@ paths:
           description: Общая ошибка
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /users/{id}/balance:
+    patch:
+      security:
+      - Bearer: []
+      summary: "Update balance"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: balance
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateUserBalance"
+      responses:
+        201:
+          description: "Update balance updated"
+          schema:
+            $ref: "#/definitions/User"
+        default:
+          description: Общая ошибка
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /users/leaderboard:
     get:
       security:
@@ -171,6 +195,12 @@ definitions:
         x-go-custom-tag: "validate:\"required\""
       password:
         type: string
+        x-go-custom-tag: "validate:\"required\""
+  UpdateUserBalance:
+    type: object
+    properties:
+      amount:
+        type: integer
         x-go-custom-tag: "validate:\"required\""
   Task:
     type: object

@@ -144,6 +144,46 @@ func init() {
         }
       }
     },
+    "/users/{id}/balance": {
+      "patch": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Update balance",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "balance",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUserBalance"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Update balance updated",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "default": {
+            "description": "Общая ошибка",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
     "/users/{id}/status": {
       "get": {
         "security": [
@@ -339,6 +379,15 @@ func init() {
         }
       }
     },
+    "UpdateUserBalance": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "x-go-custom-tag": "validate:\"required\""
+        }
+      }
+    },
     "User": {
       "type": "object",
       "properties": {
@@ -482,6 +531,46 @@ func init() {
         "responses": {
           "204": {
             "description": "User deleted"
+          },
+          "default": {
+            "description": "Общая ошибка",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/balance": {
+      "patch": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Update balance",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "balance",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUserBalance"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Update balance updated",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
           },
           "default": {
             "description": "Общая ошибка",
@@ -693,6 +782,15 @@ func init() {
         },
         "user_id": {
           "type": "integer"
+        }
+      }
+    },
+    "UpdateUserBalance": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "x-go-custom-tag": "validate:\"required\""
         }
       }
     },

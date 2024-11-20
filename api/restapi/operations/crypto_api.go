@@ -51,6 +51,9 @@ func NewCryptoAPI(spec *loads.Document) *CryptoAPI {
 		GetUsersLeaderboardHandler: GetUsersLeaderboardHandlerFunc(func(params GetUsersLeaderboardParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation GetUsersLeaderboard has not yet been implemented")
 		}),
+		PatchUsersIDBalanceHandler: PatchUsersIDBalanceHandlerFunc(func(params PatchUsersIDBalanceParams, principal interface{}) middleware.Responder {
+			return middleware.NotImplemented("operation PatchUsersIDBalance has not yet been implemented")
+		}),
 		PostUsersHandler: PostUsersHandlerFunc(func(params PostUsersParams) middleware.Responder {
 			return middleware.NotImplemented("operation PostUsers has not yet been implemented")
 		}),
@@ -119,6 +122,8 @@ type CryptoAPI struct {
 	GetUsersIDStatusHandler GetUsersIDStatusHandler
 	// GetUsersLeaderboardHandler sets the operation handler for the get users leaderboard operation
 	GetUsersLeaderboardHandler GetUsersLeaderboardHandler
+	// PatchUsersIDBalanceHandler sets the operation handler for the patch users ID balance operation
+	PatchUsersIDBalanceHandler PatchUsersIDBalanceHandler
 	// PostUsersHandler sets the operation handler for the post users operation
 	PostUsersHandler PostUsersHandler
 	// PostUsersLoginHandler sets the operation handler for the post users login operation
@@ -216,6 +221,9 @@ func (o *CryptoAPI) Validate() error {
 	}
 	if o.GetUsersLeaderboardHandler == nil {
 		unregistered = append(unregistered, "GetUsersLeaderboardHandler")
+	}
+	if o.PatchUsersIDBalanceHandler == nil {
+		unregistered = append(unregistered, "PatchUsersIDBalanceHandler")
 	}
 	if o.PostUsersHandler == nil {
 		unregistered = append(unregistered, "PostUsersHandler")
@@ -338,6 +346,10 @@ func (o *CryptoAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/users/leaderboard"] = NewGetUsersLeaderboard(o.context, o.GetUsersLeaderboardHandler)
+	if o.handlers["PATCH"] == nil {
+		o.handlers["PATCH"] = make(map[string]http.Handler)
+	}
+	o.handlers["PATCH"]["/users/{id}/balance"] = NewPatchUsersIDBalance(o.context, o.PatchUsersIDBalanceHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

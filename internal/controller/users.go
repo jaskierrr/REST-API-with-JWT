@@ -25,3 +25,7 @@ func (c controller) GetUsers(ctx context.Context, params operations.GetUsersLead
 func (c controller) Login(ctx context.Context, userData models.NewUser) (string, error) {
 	return c.service.Login(ctx, userData)
 }
+
+func (c controller) UpdateBalance(ctx context.Context, id int64, amount int64) (models.User, error) {
+	return c.service.UpdateBalance(ctx, id, amount)
+}

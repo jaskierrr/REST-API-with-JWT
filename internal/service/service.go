@@ -21,9 +21,10 @@ type Service interface {
 	PostUser(ctx context.Context, userData models.NewUser) (models.User, error)
 	DeleteUserID(ctx context.Context, params operations.DeleteUsersIDParams) error
 	GetUsers(ctx context.Context, params operations.GetUsersLeaderboardParams) ([]*models.User, error)
+	UpdateBalance(ctx context.Context, id int64, amount int64) (models.User, error)
 	PostTask(ctx context.Context, taskData models.NewTask, userID int64) (models.Task, error)
 	PostRef(ctx context.Context, refData models.NewReferrer, userID int64) (models.Referrer, error)
-	
+
 	Login(ctx context.Context, user models.NewUser) (string, error)
 }
 

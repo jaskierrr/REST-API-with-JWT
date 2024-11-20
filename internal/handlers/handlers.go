@@ -22,6 +22,7 @@ type Handlers interface {
 	PostUsers(params operations.PostUsersParams) middleware.Responder
 	GetUsersID(params operations.GetUsersIDStatusParams, principal interface{}) middleware.Responder
 	DeleteUsersID(params operations.DeleteUsersIDParams, principal interface{}) middleware.Responder
+	UpdateBalance(params operations.PatchUsersIDBalanceParams, principal interface{}) middleware.Responder
 	GetUsersLeader(params operations.GetUsersLeaderboardParams, principal interface{}) middleware.Responder
 	PostTask(params operations.PostUsersUserIDTaskCompleteParams, principal interface{}) middleware.Responder
 	PostRef(params operations.PostUsersUserIDReferrerParams, principal interface{}) middleware.Responder
@@ -47,6 +48,7 @@ func (h *handlers) Link(api *operations.CryptoAPI) {
 	api.PostUsersLoginHandler = operations.PostUsersLoginHandlerFunc(h.Login)
 	api.PostUsersUserIDTaskCompleteHandler = operations.PostUsersUserIDTaskCompleteHandlerFunc(h.PostTask)
 	api.PostUsersUserIDReferrerHandler = operations.PostUsersUserIDReferrerHandlerFunc(h.PostRef)
+	api.PatchUsersIDBalanceHandler = operations.PatchUsersIDBalanceHandlerFunc(h.UpdateBalance)
 
 	//! Объявление Middleware
 	api.BearerAuth = jwt.ValidateToken
