@@ -64,5 +64,5 @@ func ValidateToken(tokenStr string) (interface{}, error) {
 		return nil, fmt.Errorf("token invalid")
 	}
 
-	return "token invalid", nil
+	return "token valid", nil
 }
